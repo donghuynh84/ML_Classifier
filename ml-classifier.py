@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import datasets
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
@@ -18,7 +19,7 @@ st.write("""
 
 dataset_name = st.sidebar.selectbox("Select Dataset", ("Iris", "Breast Cancer", "Wine Dataset"))
 st.sidebar.write("Which one is the best?")
-classifier_name = st.sidebar.selectbox("Select Classifier", ("KNN", "SVM", "Random Forest"))
+classifier_name = st.sidebar.selectbox("Select Classifier", ("KNN", "SVM", "Random Forest", "Extra Tree Classifier"))
 
 
 def get_dataset(dataset_name):
@@ -45,6 +46,12 @@ def add_parameter_ui(clf_name):
     elif clf_name == "SVM":
         C = st.sidebar.slider("C", 0.01, 10.0)
         params["C"] = C
+
+    elif clf_name == "Extra Tree Classifier":
+        n_estimators = st.sidebar.slider("Number Estimator", 1, 100)
+        params["n_estimators"] = n_estimators
+
+
     else:
         max_depth = st.sidebar.slider("Max Depth", 2, 15)
         n_estimators = st.sidebar.slider("Number Estimator", 1, 100)
@@ -59,6 +66,9 @@ def get_classifer(clf_name, params):
 
     elif clf_name == "SVM":
         clf = SVC(C=params["C"])
+
+    elif clf_name == "Extra Tree Classifier":
+        clf = ExtraTreesClassifier(n_estimators=params["n_estimators"],random_state=101)
 
     else:
         clf = RandomForestClassifier(n_estimators=params["n_estimators"],
